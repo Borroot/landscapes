@@ -45,9 +45,9 @@ def draw_pixels(pixels, width, height):
 def draw_biome(value):
     if   value < 0.30: return WATER
     elif value < 0.35: return BEACH
-    elif value < 0.55: return FOREST
-    elif value < 0.65: return JUNGLE
-    elif value < 0.75: return MOUNTAIN
+    elif value < 0.50: return FOREST
+    elif value < 0.60: return JUNGLE
+    elif value < 0.70: return MOUNTAIN
     else:              return SNOW
 
 
@@ -60,7 +60,7 @@ def draw(width, height, zoom):
 
 def main():
     width, height = 500, 500
-    zoom = 8.0
+    zoom = 5.0
 
     pygame.init()
 
