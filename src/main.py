@@ -1,5 +1,6 @@
 from opensimplex import OpenSimplex
 import time
+import math
 import pygame
 from pygame.locals import *
 
@@ -13,9 +14,6 @@ SNOW     = pygame.Color(255, 255, 255)
 
 
 def draw_layers(pixels, width, height, zoom):
-    surface = pygame.display.get_surface()
-    width, height = surface.get_size()
-
     s1 = OpenSimplex(seed=int(time.time()))
     s2 = OpenSimplex(seed=int(time.time()))
     s3 = OpenSimplex(seed=int(time.time()))
@@ -26,6 +24,14 @@ def draw_layers(pixels, width, height, zoom):
               + 0.5  * s2.noise2d(2 * nx * zoom, 2 * ny * zoom) \
               + 0.25 * s3.noise2d(4 * nx * zoom, 4 * ny * zoom)
         pixels[y][x] = (value / (1 + 0.5 + 0.25) + 1) / 2
+
+
+def draw_mask(pixels, width, height):
+    max_dist = math.sqrt((width / 2) ** 2 + (height / 2) ** 2)
+    for x, y in [(x, y) for x in range(width) for y in range(height)]:
+        distx, disty = width / 2 - x, height / 2 - y
+        dist = math.sqrt(distx ** 2 + disty ** 2)
+        pixels[y][x] *= 1 - dist / max_dist
 
 
 def draw_pixels(pixels, width, height):
@@ -48,12 +54,13 @@ def draw_biome(value):
 def draw(width, height, zoom):
     pixels = [[0] * width for _ in range(height)]
     draw_layers(pixels, width, height, zoom)
+    draw_mask(pixels, width, height)
     draw_pixels(pixels, width, height)
 
 
 def main():
     width, height = 500, 500
-    zoom = 5.0
+    zoom = 8.0
 
     pygame.init()
 
